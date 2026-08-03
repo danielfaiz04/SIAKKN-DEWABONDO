@@ -1,8 +1,23 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fffdf0;
+  --foreground: #1a1a1a;
+  
+  /* Neubrutalism Colors */
+  --neu-yellow: #ffeb3b;
+  --neu-pink: #ff6b6b;
+  --neu-blue: #4ecdc4;
+  --neu-green: #95e1d3;
+  --neu-purple: #a8e6cf;
+  --neu-orange: #ff8b94;
+  --neu-black: #1a1a1a;
+  --neu-white: #ffffff;
+  
+  /* Neubrutalism Shadows */
+  --shadow-hard: 4px 4px 0px 0px var(--neu-black);
+  --shadow-hard-sm: 2px 2px 0px 0px var(--neu-black);
+  --shadow-hard-lg: 6px 6px 0px 0px var(--neu-black);
 }
 
 @theme inline {
@@ -10,17 +25,64 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  
+  /* Custom neubrutalism utilities */
+  --border-neu: 3px solid var(--neu-black);
+  --shadow-neu: var(--shadow-hard);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
+  font-weight: 500;
+}
+
+/* Neubrutalism Base Styles */
+.neu-card {
+  border: 3px solid var(--neu-black);
+  box-shadow: var(--shadow-hard);
+  border-radius: 0;
+  background: var(--neu-white);
+}
+
+.neu-btn {
+  border: 3px solid var(--neu-black);
+  box-shadow: var(--shadow-hard-sm);
+  border-radius: 0;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.1s ease;
+}
+
+.neu-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px 0px var(--neu-black);
+}
+
+.neu-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px 0px var(--neu-black);
+}
+
+.neu-input {
+  border: 3px solid var(--neu-black);
+  box-shadow: var(--shadow-hard-sm);
+  border-radius: 0;
+  background: var(--neu-white);
+  font-weight: 500;
+}
+
+.neu-input:focus {
+  outline: none;
+  box-shadow: 3px 3px 0px 0px var(--neu-black);
+}
+
+.neu-badge {
+  border: 2px solid var(--neu-black);
+  box-shadow: var(--shadow-hard-sm);
+  border-radius: 0;
+  font-weight: 700;
+  text-transform: uppercase;
 }
