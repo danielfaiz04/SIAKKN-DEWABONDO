@@ -19,7 +19,7 @@ type FormState = {
   jabatan: string;
   jenis_absensi: "Pagi" | "Malam";
   kegiatan: string;
-  laporan_kegiatan: string;
+  deskripsi_kegiatan: string;
   keterangan: string;
   latitude: number | null;
   longitude: number | null;
@@ -38,7 +38,7 @@ export default function AbsensiForm() {
     jabatan: "",
     jenis_absensi: "Pagi",
     kegiatan: "",
-    laporan_kegiatan: "",
+    deskripsi_kegiatan: "",
     keterangan: "",
     latitude: null,
     longitude: null,
@@ -265,8 +265,8 @@ export default function AbsensiForm() {
                     <input value={form.kegiatan} onChange={(e) => setForm({ ...form, kegiatan: e.target.value })} className="neu-input mt-2 w-full px-3 py-3 text-sm" />
                   </label>
                   <label className="block text-sm font-bold uppercase">
-                    Laporan Kegiatan
-                    <textarea value={form.laporan_kegiatan} onChange={(e) => setForm({ ...form, laporan_kegiatan: e.target.value })} className="neu-input mt-2 min-h-24 w-full px-3 py-3 text-sm" />
+                    Deskripsi Kegiatan
+                    <textarea value={form.deskripsi_kegiatan} onChange={(e) => setForm({ ...form, deskripsi_kegiatan: e.target.value })} className="neu-input mt-2 min-h-24 w-full px-3 py-3 text-sm" />
                   </label>
                   <label className="block text-sm font-bold uppercase">
                     Keterangan
