@@ -19,8 +19,12 @@ export async function validateJamAbsen(jenis: AbsensiJenis) {
     throw new Error(error?.message || "Pengaturan jam absensi tidak ditemukan");
   }
 
-  const now = new Date();
-  const currentTime = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+  const currentTime = new Intl.DateTimeFormat("id-ID", {
+    timeZone: "Asia/Jakarta",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(new Date());
 
   if (jenis === "Pagi") {
     return {
