@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # SIAKKN Dewa Bondo
 
 Sistem Informasi Absensi KKN dengan desain Neubrutalism, dibangun dengan Next.js 16 dan Supabase.
@@ -262,3 +263,7 @@ Bisa diubah melalui Dashboard Admin > Pengaturan Jam.
 ## License
 
 MIT License - KKN Dewa Bondo
+=======
+# SIAKKN-DEWABONDO
+Sistem Absensi KKN
+>>>>>>> 99ab29eb2258749b12836a908b2c65b39497b100
