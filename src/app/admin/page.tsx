@@ -441,7 +441,9 @@ export default function AdminPage() {
                 <tr className="border-b-3 border-black text-left font-bold uppercase">
                   <th className="px-3 py-2">Nama</th>
                   <th className="px-3 py-2">Tanggal</th>
+                  <th className="px-3 py-2">Jam</th>
                   <th className="px-3 py-2">Jenis</th>
+                  <th className="px-3 py-2">Kegiatan</th>
                   <th className="px-3 py-2">Status</th>
                 </tr>
               </thead>
@@ -450,7 +452,9 @@ export default function AdminPage() {
                   <tr key={item.id} className="border-b border-black">
                     <td className="px-3 py-2 font-medium">{item.nama}</td>
                     <td className="px-3 py-2">{item.tanggal}</td>
+                    <td className="px-3 py-2">{item.jam}</td>
                     <td className="px-3 py-2">{item.jenis_absensi}</td>
+                    <td className="px-3 py-2">{item.kegiatan || "-"}</td>
                     <td className="px-3 py-2">{item.status}</td>
                   </tr>
                 ))}
