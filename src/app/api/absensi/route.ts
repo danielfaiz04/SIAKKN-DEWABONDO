@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createMockSupabaseResponse, createServerSupabaseClient } from "@/lib/supabase";
 import { validateJamAbsen, AbsensiJenis } from "@/lib/validateJam";
+import { getWIBDate } from "@/lib/date";
 
 // Sanitize input to prevent XSS
 function sanitizeInput(input: string): string {
@@ -77,7 +78,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const today = new Date().toISOString().slice(0, 10);
+    const now = getWIBDate();
+
+const today =
+  now.getFullYear() +
+  "-" +
+  String(now.getMonth() + 1).padStart(2, "0") +
+  "-" +
+  String(now.getDate()).padStart(2, "0");
+
+const currentTime =
+  String(now.getHours()).padStart(2, "0") +
+  ":" +
+  String(now.getMinutes()).padStart(2, "0") +
+  ":" +
+  String(now.getSeconds()).padStart(2, "0");
+
     const fileName = generateFileName(`foto-${sanitizedNama}-${today}.jpg`);
     const photoBytes = decodeBase64ToUint8Array(foto);
 
@@ -99,9 +115,9 @@ export async function POST(request: NextRequest) {
 
     const id = `ABS-${Date.now()}`;
     const { error: insertError } = await supabase.from("absensi").insert({
-      id,
-      tanggal: today,
-      jam: new Date().toTimeString().slice(0, 8),
+    id,
+  tanggal: today,
+  jam: currentTime,
       nama: sanitizedNama,
       nim: sanitizedNim,
       prodi: sanitizedProdi,
