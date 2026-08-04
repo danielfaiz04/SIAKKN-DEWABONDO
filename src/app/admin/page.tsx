@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import DashboardCharts from "@/components/DashboardCharts";
+import DashboardCard from "@/components/DashboardCard";
+import DashboardModal from "@/components/DashboardModal";
 import { exportToExcel } from "@/lib/exportExcel";
 
 type AnggotaItem = {
@@ -51,6 +53,11 @@ export default function AdminPage() {
     nama_kegiatan: "",
     status: "Aktif",
   });
+
+  // Modal states
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalContent, setModalContent] = useState<React.ReactNode>(null);
 
   async function loadData() {
     try {
@@ -198,6 +205,207 @@ export default function AdminPage() {
     loadData();
   }
 
+  // Modal handlers
+  const showHadirPagiModal = () => {
+    const data = dashboard?.data?.detailHadirPagi || [];
+    if (data.length === 0) {
+      setModalTitle("Hadir Pagi");
+      setModalContent(<p className="text-center py-4">Belum ada data absensi pagi.</p>);
+    } else {
+      setModalTitle("Hadir Pagi");
+      setModalContent(
+        <div className="space-y-2">
+          <div className="grid grid-cols-3 gap-2 font-bold uppercase text-sm border-b-2 border-black pb-2">
+            <span>Nama</span>
+            <span>Jam</span>
+            <span>Status</span>
+          </div>
+          {data.map((item: any, index: number) => (
+            <div key={index} className="grid grid-cols-3 gap-2 text-sm border-b border-black/20 pb-2">
+              <span className="font-medium">{item.nama}</span>
+              <span>{item.jam}</span>
+              <span className="neu-badge inline-block bg-[#95e1d3] px-2 py-1 text-xs">{item.status}</span>
+            </div>
+          ))}
+          <p className="mt-4 font-bold">Jumlah: {data.length} orang</p>
+        </div>
+      );
+    }
+    setModalOpen(true);
+  };
+
+  const showHadirMalamModal = () => {
+    const data = dashboard?.data?.detailHadirMalam || [];
+    if (data.length === 0) {
+      setModalTitle("Hadir Malam");
+      setModalContent(<p className="text-center py-4">Belum ada data absensi malam.</p>);
+    } else {
+      setModalTitle("Hadir Malam");
+      setModalContent(
+        <div className="space-y-2">
+          <div className="grid grid-cols-3 gap-2 font-bold uppercase text-sm border-b-2 border-black pb-2">
+            <span>Nama</span>
+            <span>Jam</span>
+            <span>Status</span>
+          </div>
+          {data.map((item: any, index: number) => (
+            <div key={index} className="grid grid-cols-3 gap-2 text-sm border-b border-black/20 pb-2">
+              <span className="font-medium">{item.nama}</span>
+              <span>{item.jam}</span>
+              <span className="neu-badge inline-block bg-[#95e1d3] px-2 py-1 text-xs">{item.status}</span>
+            </div>
+          ))}
+          <p className="mt-4 font-bold">Jumlah: {data.length} orang</p>
+        </div>
+      );
+    }
+    setModalOpen(true);
+  };
+
+  const showBelumAbsenPagiModal = () => {
+    const data = dashboard?.data?.detailBelumAbsenPagi || [];
+    if (data.length === 0) {
+      setModalTitle("Belum Absen Pagi");
+      setModalContent(<p className="text-center py-4">Semua anggota sudah melakukan absensi pagi.</p>);
+    } else {
+      setModalTitle("Belum Absen Pagi");
+      setModalContent(
+        <div className="space-y-2">
+          {data.map((item: any, index: number) => (
+            <div key={index} className="flex items-center gap-2 text-sm border-b border-black/20 pb-2">
+              <span className="font-medium">•</span>
+              <span>{item.nama}</span>
+            </div>
+          ))}
+          <p className="mt-4 font-bold">Jumlah: {data.length} orang</p>
+        </div>
+      );
+    }
+    setModalOpen(true);
+  };
+
+  const showBelumAbsenMalamModal = () => {
+    const data = dashboard?.data?.detailBelumAbsenMalam || [];
+    if (data.length === 0) {
+      setModalTitle("Belum Absen Malam");
+      setModalContent(<p className="text-center py-4">Semua anggota sudah melakukan absensi malam.</p>);
+    } else {
+      setModalTitle("Belum Absen Malam");
+      setModalContent(
+        <div className="space-y-2">
+          {data.map((item: any, index: number) => (
+            <div key={index} className="flex items-center gap-2 text-sm border-b border-black/20 pb-2">
+              <span className="font-medium">•</span>
+              <span>{item.nama}</span>
+            </div>
+          ))}
+          <p className="mt-4 font-bold">Jumlah: {data.length} orang</p>
+        </div>
+      );
+    }
+    setModalOpen(true);
+  };
+
+  const showSedangIzinModal = () => {
+    const data = dashboard?.data?.detailSedangIzin || [];
+    if (data.length === 0) {
+      setModalTitle("Sedang Izin");
+      setModalContent(<p className="text-center py-4">Tidak ada anggota yang sedang izin.</p>);
+    } else {
+      setModalTitle("Sedang Izin");
+      setModalContent(
+        <div className="space-y-2">
+          <div className="grid grid-cols-4 gap-2 font-bold uppercase text-sm border-b-2 border-black pb-2">
+            <span>Nama</span>
+            <span>Divisi</span>
+            <span>Jam Izin</span>
+            <span>Alasan</span>
+          </div>
+          {data.map((item: any, index: number) => (
+            <div key={index} className="grid grid-cols-4 gap-2 text-sm border-b border-black/20 pb-2">
+              <span className="font-medium">{item.nama}</span>
+              <span>{item.divisi || "-"}</span>
+              <span>{item.jam_keluar || "-"}</span>
+              <span>{item.alasan || "-"}</span>
+            </div>
+          ))}
+          <p className="mt-4 font-bold">Jumlah: {data.length} orang</p>
+        </div>
+      );
+    }
+    setModalOpen(true);
+  };
+
+  const showSudahKembaliModal = () => {
+    const data = dashboard?.data?.detailSudahKembali || [];
+    if (data.length === 0) {
+      setModalTitle("Sudah Kembali");
+      setModalContent(<p className="text-center py-4">Belum ada anggota yang kembali dari izin.</p>);
+    } else {
+      setModalTitle("Sudah Kembali");
+      setModalContent(
+        <div className="space-y-2">
+          <div className="grid grid-cols-2 gap-2 font-bold uppercase text-sm border-b-2 border-black pb-2">
+            <span>Nama</span>
+            <span>Jam Kembali</span>
+          </div>
+          {data.map((item: any, index: number) => (
+            <div key={index} className="grid grid-cols-2 gap-2 text-sm border-b border-black/20 pb-2">
+              <span className="font-medium">{item.nama}</span>
+              <span>{item.jam_kembali || "-"}</span>
+            </div>
+          ))}
+          <p className="mt-4 font-bold">Jumlah: {data.length} orang</p>
+        </div>
+      );
+    }
+    setModalOpen(true);
+  };
+
+  const handleRefreshData = () => {
+    loadData();
+    setToast({ message: "Data berhasil diperbarui", type: "success" });
+    setTimeout(() => setToast(null), 3000);
+  };
+
+  const handleExportExcel = () => {
+    const exportData = absensi.map((item) => ({
+      Tanggal: item.tanggal,
+      Jam: item.jam,
+      Nama: item.nama,
+      NIM: item.nim,
+      Prodi: item.prodi,
+      Jabatan: item.jabatan,
+      Jenis: item.jenis_absensi,
+      Status: item.status,
+      Kegiatan: item.kegiatan || "-",
+      Keterangan: item.keterangan || "-",
+    }));
+    exportToExcel(exportData, `rekap-absensi-${new Date().toISOString().slice(0, 10)}`);
+    setToast({ message: "Data berhasil diexport", type: "success" });
+    setTimeout(() => setToast(null), 3000);
+  };
+
+  const handleRekapHariIni = () => {
+    const today = new Date().toISOString().slice(0, 10);
+    const todayData = absensi.filter((item) => item.tanggal === today);
+    const exportData = todayData.map((item) => ({
+      Tanggal: item.tanggal,
+      Jam: item.jam,
+      Nama: item.nama,
+      NIM: item.nim,
+      Prodi: item.prodi,
+      Jabatan: item.jabatan,
+      Jenis: item.jenis_absensi,
+      Status: item.status,
+      Kegiatan: item.kegiatan || "-",
+      Keterangan: item.keterangan || "-",
+    }));
+    exportToExcel(exportData, `rekap-hari-ini-${today}`);
+    setToast({ message: "Rekap hari ini berhasil diexport", type: "success" });
+    setTimeout(() => setToast(null), 3000);
+  };
+
   if (loading) {
     return <div className="p-8 text-[#1a1a1a] font-bold uppercase">Memuat dashboard admin...</div>;
   }
@@ -244,53 +452,102 @@ export default function AdminPage() {
       )}
       <div className="mx-auto max-w-7xl space-y-6">
         <div className="neu-card bg-[#4ecdc4] p-6">
-          <h1 className="text-3xl font-bold uppercase tracking-tight">Dashboard Admin</h1>
-          <p className="mt-2 font-medium">Ringkasan absensi, anggota aktif, dan rekap data terbaru.</p>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
-          <div className="neu-card bg-[#ffeb3b] p-4">
-            <p className="text-sm font-bold uppercase">Total Anggota</p>
-            <p className="mt-2 text-3xl font-bold">{dashboard?.data?.totalAnggotaAktif ?? 0}</p>
-          </div>
-          <div className="neu-card bg-[#95e1d3] p-4">
-            <p className="text-sm font-bold uppercase">Hadir Hari Ini</p>
-            <p className="mt-2 text-3xl font-bold">{dashboard?.data?.statistik?.Hadir ?? 0}</p>
-          </div>
-          <div className="neu-card bg-[#ff8b94] p-4">
-            <p className="text-sm font-bold uppercase">Sedang Izin</p>
-            <p className="mt-2 text-3xl font-bold">{dashboard?.data?.sedangIzin ?? 0}</p>
-          </div>
-          <div className="neu-card bg-[#a8e6cf] p-4">
-            <p className="text-sm font-bold uppercase">Belum Absen</p>
-            <p className="mt-2 text-3xl font-bold">{dashboard?.data?.belumAbsen ?? 0}</p>
-          </div>
-          <div className="neu-card bg-[#4ecdc4] p-4">
-            <p className="text-sm font-bold uppercase">Sudah Kembali</p>
-            <p className="mt-2 text-3xl font-bold">{dashboard?.data?.sudahKembali ?? 0}</p>
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <h1 className="text-3xl font-bold uppercase tracking-tight">Dashboard Admin</h1>
+              <p className="mt-2 font-medium">Ringkasan absensi, anggota aktif, dan rekap data terbaru.</p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button onClick={handleRefreshData} className="neu-btn bg-[#ffeb3b] px-4 py-2 text-sm font-bold uppercase">
+                Refresh Data
+              </button>
+              <button onClick={handleRekapHariIni} className="neu-btn bg-[#95e1d3] px-4 py-2 text-sm font-bold uppercase">
+                Rekap Hari Ini
+              </button>
+              <button onClick={handleExportExcel} className="neu-btn bg-[#a8e6cf] px-4 py-2 text-sm font-bold uppercase">
+                Export Excel
+              </button>
+            </div>
           </div>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <div className="neu-card bg-[#ff6b6b] p-4">
-            <p className="text-sm font-bold uppercase">Total Izin Hari Ini</p>
-            <p className="mt-2 text-2xl font-bold">{dashboard?.data?.totalIzinHariIni ?? 0}</p>
-          </div>
-          <div className="neu-card bg-[#ffeb3b] p-4">
-            <p className="text-sm font-bold uppercase">Persentase Kehadiran</p>
-            <p className="mt-2 text-2xl font-bold">{dashboard?.data?.persentaseKehadiran ?? 0}%</p>
-          </div>
-          <div className="neu-card bg-[#95e1d3] p-4">
-            <p className="text-sm font-bold uppercase">Divisi Paling Disiplin</p>
-            <p className="mt-2 text-2xl font-bold">{dashboard?.data?.divisiPalingDisiplin ?? "-"}</p>
-          </div>
-          <div className="neu-card bg-[#a8e6cf] p-4">
-            <p className="text-sm font-bold uppercase">Slot Izin Tersedia</p>
-            <p className="mt-2 text-2xl font-bold">{dashboard?.data?.slotTersedia ?? 0} / {dashboard?.data?.maksSlotIzin ?? 3}</p>
-          </div>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <DashboardCard
+            title="Total Anggota"
+            value={dashboard?.data?.totalAnggotaAktif ?? 0}
+            color="blue"
+          />
+          <DashboardCard
+            title="Hadir Pagi Ini"
+            value={dashboard?.data?.hadirPagi ?? 0}
+            color="green"
+            onClick={showHadirPagiModal}
+            interactive
+            badge={<span className="neu-badge inline-block bg-[#95e1d3] px-2 py-1 text-xs">Klik</span>}
+          />
+          <DashboardCard
+            title="Hadir Malam Ini"
+            value={dashboard?.data?.hadirMalam ?? 0}
+            color="green"
+            onClick={showHadirMalamModal}
+            interactive
+            badge={<span className="neu-badge inline-block bg-[#95e1d3] px-2 py-1 text-xs">Klik</span>}
+          />
+          <DashboardCard
+            title="Belum Absen Pagi"
+            value={dashboard?.data?.belumAbsenPagi ?? 0}
+            color="pink"
+            onClick={showBelumAbsenPagiModal}
+            interactive
+            badge={<span className="neu-badge inline-block bg-[#ff6b6b] px-2 py-1 text-xs">Klik</span>}
+          />
+          <DashboardCard
+            title="Belum Absen Malam"
+            value={dashboard?.data?.belumAbsenMalam ?? 0}
+            color="pink"
+            onClick={showBelumAbsenMalamModal}
+            interactive
+            badge={<span className="neu-badge inline-block bg-[#ff6b6b] px-2 py-1 text-xs">Klik</span>}
+          />
+          <DashboardCard
+            title="Sedang Izin"
+            value={dashboard?.data?.sedangIzin ?? 0}
+            color="yellow"
+            onClick={showSedangIzinModal}
+            interactive
+            badge={<span className="neu-badge inline-block bg-[#ffeb3b] px-2 py-1 text-xs">Klik</span>}
+          />
+          <DashboardCard
+            title="Sudah Kembali"
+            value={dashboard?.data?.sudahKembali ?? 0}
+            color="green"
+            onClick={showSudahKembaliModal}
+            interactive
+            badge={<span className="neu-badge inline-block bg-[#95e1d3] px-2 py-1 text-xs">Klik</span>}
+          />
+          <DashboardCard
+            title="Total Izin Hari Ini"
+            value={dashboard?.data?.totalIzinHariIni ?? 0}
+            color="pink"
+          />
+          <DashboardCard
+            title="Slot Izin Tersedia"
+            value={`${dashboard?.data?.slotTersedia ?? 0} / ${dashboard?.data?.maksSlotIzin ?? 3}`}
+            color="purple"
+          />
+          <DashboardCard
+            title="Persentase Kehadiran Pagi"
+            value={`${dashboard?.data?.persentaseKehadiranPagi ?? 0}%`}
+            color="green"
+          />
+          <DashboardCard
+            title="Persentase Kehadiran Malam"
+            value={`${dashboard?.data?.persentaseKehadiranMalam ?? 0}%`}
+            color="green"
+          />
         </div>
 
-        <DashboardCharts dashboardData={dashboard?.data} />
+        <DashboardCharts />
 
         <div className="neu-card bg-white p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
@@ -504,6 +761,14 @@ export default function AdminPage() {
             </table>
           </div>
         </div>
+
+        <DashboardModal
+          isOpen={modalOpen}
+          onClose={() => setModalOpen(false)}
+          title={modalTitle}
+        >
+          {modalContent}
+        </DashboardModal>
       </div>
     </main>
   );

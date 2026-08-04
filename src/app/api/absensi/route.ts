@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createMockSupabaseResponse, createServerSupabaseClient } from "@/lib/supabase";
 import { validateJamAbsen, AbsensiJenis } from "@/lib/validateJam";
-import { getWIBDate } from "@/lib/date";
+import { getJamWIB, getTanggalWIB, getWIBDate } from "@/lib/date";
+import { getWIBDate as getWIBDateUtil } from "@/lib/date";
+
 
 // Sanitize input to prevent XSS
 function sanitizeInput(input: string): string {
@@ -15,7 +17,7 @@ function decodeBase64ToUint8Array(base64Data: string) {
 }
 
 function generateFileName(originalName: string) {
-  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+  const timestamp = getWIBDate().toISOString().replace(/[:.]/g, "-");
   const ext = originalName.split(".").pop() || "jpg";
   return `${timestamp}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
 }
@@ -80,19 +82,19 @@ export async function POST(request: NextRequest) {
 
     const now = getWIBDate();
 
-const today =
-  now.getFullYear() +
-  "-" +
-  String(now.getMonth() + 1).padStart(2, "0") +
-  "-" +
-  String(now.getDate()).padStart(2, "0");
+    const today =
+      now.getFullYear() +
+      "-" +
+      String(now.getMonth() + 1).padStart(2, "0") +
+      "-" +
+      String(now.getDate()).padStart(2, "0");
 
-const currentTime =
-  String(now.getHours()).padStart(2, "0") +
-  ":" +
-  String(now.getMinutes()).padStart(2, "0") +
-  ":" +
-  String(now.getSeconds()).padStart(2, "0");
+    const currentTime =
+      String(now.getHours()).padStart(2, "0") +
+      ":" +
+      String(now.getMinutes()).padStart(2, "0") +
+      ":" +
+      String(now.getSeconds()).padStart(2, "0");
 
     const fileName = generateFileName(`foto-${sanitizedNama}-${today}.jpg`);
     const photoBytes = decodeBase64ToUint8Array(foto);
@@ -115,9 +117,9 @@ const currentTime =
 
     const id = `ABS-${Date.now()}`;
     const { error: insertError } = await supabase.from("absensi").insert({
-    id,
-  tanggal: today,
-  jam: currentTime,
+      id,
+      tanggal: getTanggalWIB(),
+      jam: getJamWIB(),
       nama: sanitizedNama,
       nim: sanitizedNim,
       prodi: sanitizedProdi,

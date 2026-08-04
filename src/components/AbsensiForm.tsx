@@ -322,12 +322,31 @@ export default function AbsensiForm() {
 
             <div className="neu-card bg-[#ff8b94] p-4">
               <p className="text-sm font-bold uppercase">Foto</p>
-              {photoBase64 ? <img src={photoBase64} alt="Foto absensi" className="mt-3 h-40 w-full border-2 border-black shadow-[2px_2px_0px_0px_#1a1a1a]" /> : <p className="mt-2 text-sm font-medium">Belum ada foto yang ditangkap.</p>}
+              {photoBase64 ? (
+                <div className="mt-3 overflow-hidden rounded border-2 border-black shadow-[2px_2px_0px_0px_#1a1a1a]">
+                  <img 
+                    src={photoBase64} 
+                    alt="Foto absensi" 
+                    className="w-full object-contain"
+                    style={{ maxHeight: '300px' }}
+                  />
+                </div>
+              ) : (
+                <p className="mt-2 text-sm font-medium">Belum ada foto yang ditangkap.</p>
+              )}
             </div>
 
             {isCameraOpen && (
               <div className="neu-card bg-white p-4">
-                <video ref={videoRef} className="h-48 w-full border-2 border-black shadow-[2px_2px_0px_0px_#1a1a1a]" />
+                <div className="overflow-hidden rounded border-2 border-black shadow-[2px_2px_0px_0px_#1a1a1a]">
+                  <video 
+                    ref={videoRef} 
+                    className="w-full object-contain"
+                    style={{ maxHeight: '300px' }}
+                    autoPlay
+                    playsInline
+                  />
+                </div>
                 <button type="button" onClick={capturePhoto} className="neu-btn mt-3 bg-[#4ecdc4] px-4 py-2 text-sm">
                   Ambil Foto
                 </button>

@@ -4,11 +4,6 @@ import { useEffect, useState } from "react";
 import {
   LineChart,
   Line,
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -17,32 +12,26 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const COLORS = ["#ffeb3b", "#95e1d3", "#ff6b6b", "#4ecdc4", "#a8e6cf"];
-
 type ChartData = {
-  date: string;
+  label: string;
   count: number;
+  range: string;
 };
 
-type DivisiData = {
-  divisi: string;
-  count: number;
-};
-
-export default function DashboardCharts({ dashboardData }: { dashboardData: any }) {
-  const [kehadiran7Hari, setKehadiran7Hari] = useState<ChartData[]>([]);
+export default function DashboardCharts() {
+  const [weeklyData, setWeeklyData] = useState<{ pagi: ChartData[]; malam: ChartData[] } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch("/api/dashboard/kehadiran-7-hari");
+        const response = await fetch("/api/dashboard/kehadiran-mingguan");
         const result = await response.json();
         if (result.ok) {
-          setKehadiran7Hari(result.data);
+          setWeeklyData(result.data);
         }
       } catch {
-        setKehadiran7Hari([]);
+        setWeeklyData(null);
       } finally {
         setLoading(false);
       }
@@ -58,74 +47,66 @@ export default function DashboardCharts({ dashboardData }: { dashboardData: any 
     return () => clearInterval(interval);
   }, []);
 
-  const statusData = [
-    { name: "Hadir", value: dashboardData?.statistik?.Hadir || 0 },
-    { name: "Izin", value: dashboardData?.statistik?.Izin || 0 },
-    { name: "Sakit", value: dashboardData?.statistik?.Sakit || 0 },
-    { name: "Terlambat", value: dashboardData?.statistik?.Terlambat || 0 },
-    { name: "Alpha", value: dashboardData?.statistik?.Alpha || 0 },
-  ];
-
-  const divisiData = Object.entries(dashboardData?.kehadiranPerDivisi || {}).map(
-    ([divisi, count]) => ({ divisi, count: count as number })
-  );
-
   if (loading) {
     return <div className="neu-card bg-white p-6">Memuat grafik...</div>;
   }
 
+  if (!weeklyData) {
+    return <div className="neu-card bg-white p-6">Gagal memuat grafik</div>;
+  }
+
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="neu-card bg-white p-3 border-2 border-black">
+          <p className="font-bold uppercase">{label}</p>
+          <p className="text-sm">{payload[0].payload.range}</p>
+          <p className="text-sm font-bold mt-1">Kehadiran: {payload[0].value}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <div className="neu-card bg-white p-6">
-        <h3 className="text-lg font-bold uppercase mb-4">Kehadiran 7 Hari Terakhir</h3>
+        <h3 className="text-lg font-bold uppercase mb-4">Kehadiran Pagi</h3>
         <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={kehadiran7Hari}>
+          <LineChart data={weeklyData.pagi}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
+            <XAxis dataKey="label" />
             <YAxis />
-            <Tooltip />
+            <Tooltip content={<CustomTooltip />} />
             <Legend />
-            <Line type="monotone" dataKey="count" stroke="#1a1a1a" strokeWidth={3} />
+            <Line 
+              type="monotone" 
+              dataKey="count" 
+              stroke="#4ecdc4" 
+              strokeWidth={3}
+              name="Jumlah Hadir"
+            />
           </LineChart>
         </ResponsiveContainer>
       </div>
 
       <div className="neu-card bg-white p-6">
-        <h3 className="text-lg font-bold uppercase mb-4">Status Hari Ini</h3>
+        <h3 className="text-lg font-bold uppercase mb-4">Kehadiran Malam</h3>
         <ResponsiveContainer width="100%" height={300}>
-          <PieChart>
-            <Pie
-              data={statusData}
-              cx="50%"
-              cy="50%"
-              labelLine={false}
-              label={({ name, percent }) =>
-              `${name} ${((percent ?? 0) * 100).toFixed(0)}%`
-}
-              outerRadius={80}
-              fill="#8884d8"
-              dataKey="value"
-            >
-              {statusData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip />
-          </PieChart>
-        </ResponsiveContainer>
-      </div>
-
-      <div className="neu-card bg-white p-6 lg:col-span-2">
-        <h3 className="text-lg font-bold uppercase mb-4">Kehadiran per Divisi</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={divisiData}>
+          <LineChart data={weeklyData.malam}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="divisi" />
+            <XAxis dataKey="label" />
             <YAxis />
-            <Tooltip />
+            <Tooltip content={<CustomTooltip />} />
             <Legend />
-            <Bar dataKey="count" fill="#4ecdc4" />
-          </BarChart>
+            <Line 
+              type="monotone" 
+              dataKey="count" 
+              stroke="#ff6b6b" 
+              strokeWidth={3}
+              name="Jumlah Hadir"
+            />
+          </LineChart>
         </ResponsiveContainer>
       </div>
     </div>
