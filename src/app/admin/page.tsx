@@ -319,14 +319,14 @@ export default function AdminPage() {
             <span>Nama</span>
             <span>Divisi</span>
             <span>Jam Izin</span>
-            <span>Alasan</span>
+            <span>Keperluan</span>
           </div>
           {data.map((item: any, index: number) => (
             <div key={index} className="grid grid-cols-4 gap-2 text-sm border-b border-black/20 pb-2">
               <span className="font-medium">{item.nama}</span>
               <span>{item.divisi || "-"}</span>
               <span>{item.jam_keluar || "-"}</span>
-              <span>{item.alasan || "-"}</span>
+              <span>{item.keperluan || "-"}</span>
             </div>
           ))}
           <p className="mt-4 font-bold">Jumlah: {data.length} orang</p>

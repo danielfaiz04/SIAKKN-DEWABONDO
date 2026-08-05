@@ -48,7 +48,7 @@ export async function GET() {
     supabase.from("anggota").select("id, nama, nim, divisi, status"),
     supabase.from("absensi").select("status, nama, nim, jam").eq("tanggal", today).eq("jenis_absensi", "Pagi"),
     supabase.from("absensi").select("status, nama, nim, jam").eq("tanggal", today).eq("jenis_absensi", "Malam"),
-    supabase.from("izin").select("status, divisi, nama, jam_keluar, jam_kembali, alasan").eq("tanggal_keluar", today),
+    supabase.from("izin").select("status, divisi, nama, jam_keluar, jam_kembali, keperluan").eq("tanggal_keluar", today),
     supabase.from("pengaturan").select("*").eq("id", 1).maybeSingle(),
   ]);
 
@@ -128,7 +128,7 @@ export async function GET() {
       nama: item.nama,
       divisi: item.divisi,
       jam_keluar: item.jam_keluar,
-      alasan: item.alasan
+      keperluan: item.keperluan
     }));
 
   const detailSudahKembali = (izinData || [])
