@@ -482,48 +482,36 @@ export default function AdminPage() {
             value={dashboard?.data?.hadirPagi ?? 0}
             color="green"
             onClick={showHadirPagiModal}
-            interactive
-            badge={<span className="neu-badge inline-block bg-[#95e1d3] px-2 py-1 text-xs">Klik</span>}
           />
           <DashboardCard
             title="Hadir Malam Ini"
             value={dashboard?.data?.hadirMalam ?? 0}
             color="green"
             onClick={showHadirMalamModal}
-            interactive
-            badge={<span className="neu-badge inline-block bg-[#95e1d3] px-2 py-1 text-xs">Klik</span>}
           />
           <DashboardCard
             title="Belum Absen Pagi"
             value={dashboard?.data?.belumAbsenPagi ?? 0}
             color="pink"
             onClick={showBelumAbsenPagiModal}
-            interactive
-            badge={<span className="neu-badge inline-block bg-[#ff6b6b] px-2 py-1 text-xs">Klik</span>}
           />
           <DashboardCard
             title="Belum Absen Malam"
             value={dashboard?.data?.belumAbsenMalam ?? 0}
             color="pink"
             onClick={showBelumAbsenMalamModal}
-            interactive
-            badge={<span className="neu-badge inline-block bg-[#ff6b6b] px-2 py-1 text-xs">Klik</span>}
           />
           <DashboardCard
             title="Sedang Izin"
             value={dashboard?.data?.sedangIzin ?? 0}
             color="yellow"
             onClick={showSedangIzinModal}
-            interactive
-            badge={<span className="neu-badge inline-block bg-[#ffeb3b] px-2 py-1 text-xs">Klik</span>}
           />
           <DashboardCard
             title="Sudah Kembali"
             value={dashboard?.data?.sudahKembali ?? 0}
             color="green"
             onClick={showSudahKembaliModal}
-            interactive
-            badge={<span className="neu-badge inline-block bg-[#95e1d3] px-2 py-1 text-xs">Klik</span>}
           />
           <DashboardCard
             title="Total Izin Hari Ini"

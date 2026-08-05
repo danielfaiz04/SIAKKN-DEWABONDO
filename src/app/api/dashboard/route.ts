@@ -1,11 +1,31 @@
 import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { getTanggalWIB } from "@/lib/date";
 
 const demoDashboard = {
   ok: true,
   data: {
-    totalAnggotaAktif: 2,
-    statistik: { Hadir: 1, Izin: 0, Sakit: 0, Terlambat: 0, Alpha: 0 },
+    totalAnggotaAktif: 15,
+    statistik: { Hadir: 0, Izin: 0, Sakit: 0, Terlambat: 0, Alpha: 0 },
+    sedangIzin: 0,
+    sudahKembali: 0,
+    kehadiranPerDivisi: {},
+    maksSlotIzin: 3,
+    slotTersedia: 3,
+    totalIzinHariIni: 0,
+    divisiPalingDisiplin: "-",
+    hadirPagi: 0,
+    hadirMalam: 0,
+    belumAbsenPagi: 15,
+    belumAbsenMalam: 15,
+    persentaseKehadiranPagi: 0,
+    persentaseKehadiranMalam: 0,
+    detailHadirPagi: [],
+    detailHadirMalam: [],
+    detailSedangIzin: [],
+    detailSudahKembali: [],
+    detailBelumAbsenPagi: [],
+    detailBelumAbsenMalam: [],
   },
 };
 
@@ -16,24 +36,24 @@ export async function GET() {
     return NextResponse.json(demoDashboard);
   }
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getTanggalWIB();
 
   const [
     { data: anggotaData, error: anggotaError }, 
     { data: absensiPagiData, error: absensiPagiError },
     { data: absensiMalamData, error: absensiMalamError },
     { data: izinData, error: izinError },
-    { data: pengaturanData, error: pengaturanError }
+    { data: pengaturanData }
   ] = await Promise.all([
-    supabase.from("anggota").select("id, nim, divisi, status"),
+    supabase.from("anggota").select("id, nama, nim, divisi, status"),
     supabase.from("absensi").select("status, nama, nim, jam").eq("tanggal", today).eq("jenis_absensi", "Pagi"),
     supabase.from("absensi").select("status, nama, nim, jam").eq("tanggal", today).eq("jenis_absensi", "Malam"),
-    supabase.from("izin").select("status, divisi, nama, jam_keluar, alasan").eq("tanggal_keluar", today),
-    supabase.from("pengaturan").select("*").single(),
+    supabase.from("izin").select("status, divisi, nama, jam_keluar, jam_kembali, alasan").eq("tanggal_keluar", today),
+    supabase.from("pengaturan").select("*").eq("id", 1).maybeSingle(),
   ]);
 
-  if (anggotaError || absensiPagiError || absensiMalamError || izinError || pengaturanError) {
-    return NextResponse.json({ ok: false, message: anggotaError?.message || absensiPagiError?.message || absensiMalamError?.message || izinError?.message || pengaturanError?.message || "Gagal memuat dashboard" }, { status: 500 });
+  if (anggotaError || absensiPagiError || absensiMalamError || izinError) {
+    return NextResponse.json({ ok: false, message: anggotaError?.message || absensiPagiError?.message || absensiMalamError?.message || izinError?.message || "Gagal memuat dashboard" }, { status: 500 });
   }
 
   const statistik = { Hadir: 0, Izin: 0, Sakit: 0, Terlambat: 0, Alpha: 0 };
@@ -63,12 +83,12 @@ export async function GET() {
   const totalAnggota = anggotaData?.filter((a: any) => a.status === "Aktif").length || 0;
   const hadirPagi = absensiPagiData?.length || 0;
   const hadirMalam = absensiMalamData?.length || 0;
-  const belumAbsenPagi = totalAnggota - hadirPagi;
-  const belumAbsenMalam = totalAnggota - hadirMalam;
+  const belumAbsenPagi = Math.max(0, totalAnggota - hadirPagi);
+  const belumAbsenMalam = Math.max(0, totalAnggota - hadirMalam);
   const sudahKembali = izinData?.filter((item: any) => item.status === "Kembali").length || 0;
   const totalIzinHariIni = izinData?.length || 0;
   const maksSlotIzin = pengaturanData?.maks_slot_izin || 3;
-  const slotTersedia = maksSlotIzin - sedangIzin;
+  const slotTersedia = Math.max(0, maksSlotIzin - sedangIzin);
   const persentaseKehadiranPagi = totalAnggota > 0 ? Math.round((hadirPagi / totalAnggota) * 100) : 0;
   const persentaseKehadiranMalam = totalAnggota > 0 ? Math.round((hadirMalam / totalAnggota) * 100) : 0;
   
@@ -115,7 +135,7 @@ export async function GET() {
     .filter((item: any) => item.status === "Kembali")
     .map((item: any) => ({
       nama: item.nama,
-      jam_kembali: item.jam_keluar // Assuming jam_keluar is used for both
+      jam_kembali: item.jam_kembali || item.jam_keluar
     }));
 
   const allAnggotaNames = (anggotaData || [])
@@ -160,3 +180,4 @@ export async function GET() {
     },
   });
 }
+

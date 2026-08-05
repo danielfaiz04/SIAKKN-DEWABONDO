@@ -32,7 +32,8 @@ export default function DashboardCard({
 }: DashboardCardProps) {
   const baseClasses = "neu-card p-4 transition-all duration-200";
   const colorClass = colorClasses[color];
-  const interactiveClass = interactive 
+  const isInteractive = interactive || Boolean(onClick);
+  const interactiveClass = isInteractive 
     ? "cursor-pointer hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0px_0px_#1a1a1a]" 
     : "";
 
