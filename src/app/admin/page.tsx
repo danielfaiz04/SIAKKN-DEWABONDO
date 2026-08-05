@@ -461,9 +461,6 @@ export default function AdminPage() {
               <button onClick={handleRefreshData} className="neu-btn bg-[#ffeb3b] px-4 py-2 text-sm font-bold uppercase">
                 Refresh Data
               </button>
-              <button onClick={handleRekapHariIni} className="neu-btn bg-[#95e1d3] px-4 py-2 text-sm font-bold uppercase">
-                Rekap Hari Ini
-              </button>
               <button onClick={handleExportExcel} className="neu-btn bg-[#a8e6cf] px-4 py-2 text-sm font-bold uppercase">
                 Export Excel
               </button>
