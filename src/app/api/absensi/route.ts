@@ -64,6 +64,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: false, message: "Data absensi tidak lengkap" }, { status: 400 });
     }
 
+    console.log("=== VALIDASI JAM ===");
+    console.log({
+    jenis: sanitizedJenis,
+    currentTime: new Date().toISOString(),
+  jamPagiMulai: jamValidation.start,
+  jamPagiSelesai: jamValidation.end,
+  jamMalamMulai: jamValidation.start,
+  jamMalamSelesai: jamValidation.end,
+});
+
     // Validate jenis_absensi is either Pagi or Malam
     if (sanitizedJenis !== "Pagi" && sanitizedJenis !== "Malam") {
       return NextResponse.json({ ok: false, message: "Jenis absensi tidak valid (harus Pagi atau Malam)" }, { status: 400 });
