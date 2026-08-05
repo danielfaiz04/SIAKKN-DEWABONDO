@@ -114,7 +114,7 @@ export default function AdminPage() {
       setAbsensi(absensiData.data || []);
       setIzin(izinData.data || []);
       setPengaturan(pengaturanData.data || null);
-      setDashboard(dashboardData);
+      setDashboard(dashboardData.data);
     } catch (error) {
       console.error("Error in loadData:", error);
     } finally {
@@ -207,7 +207,7 @@ export default function AdminPage() {
 
   // Modal handlers
   const showHadirPagiModal = () => {
-    const data = dashboard?.data?.detailHadirPagi || [];
+    const data = dashboard?.detailHadirPagi || [];
     if (data.length === 0) {
       setModalTitle("Hadir Pagi");
       setModalContent(<p className="text-center py-4">Belum ada data absensi pagi.</p>);
@@ -235,7 +235,7 @@ export default function AdminPage() {
   };
 
   const showHadirMalamModal = () => {
-    const data = dashboard?.data?.detailHadirMalam || [];
+    const data = dashboard?.detailHadirMalam || [];
     if (data.length === 0) {
       setModalTitle("Hadir Malam");
       setModalContent(<p className="text-center py-4">Belum ada data absensi malam.</p>);
@@ -263,7 +263,7 @@ export default function AdminPage() {
   };
 
   const showBelumAbsenPagiModal = () => {
-    const data = dashboard?.data?.detailBelumAbsenPagi || [];
+    const data = dashboard?.detailBelumAbsenPagi || [];
     if (data.length === 0) {
       setModalTitle("Belum Absen Pagi");
       setModalContent(<p className="text-center py-4">Semua anggota sudah melakukan absensi pagi.</p>);
@@ -285,7 +285,7 @@ export default function AdminPage() {
   };
 
   const showBelumAbsenMalamModal = () => {
-    const data = dashboard?.data?.detailBelumAbsenMalam || [];
+    const data = dashboard?.detailBelumAbsenMalam || [];
     if (data.length === 0) {
       setModalTitle("Belum Absen Malam");
       setModalContent(<p className="text-center py-4">Semua anggota sudah melakukan absensi malam.</p>);
@@ -307,7 +307,7 @@ export default function AdminPage() {
   };
 
   const showSedangIzinModal = () => {
-    const data = dashboard?.data?.detailSedangIzin || [];
+    const data = dashboard?.detailSedangIzin || [];
     if (data.length === 0) {
       setModalTitle("Sedang Izin");
       setModalContent(<p className="text-center py-4">Tidak ada anggota yang sedang izin.</p>);
@@ -337,7 +337,7 @@ export default function AdminPage() {
   };
 
   const showSudahKembaliModal = () => {
-    const data = dashboard?.data?.detailSudahKembali || [];
+    const data = dashboard?.detailSudahKembali || [];
     if (data.length === 0) {
       setModalTitle("Sudah Kembali");
       setModalContent(<p className="text-center py-4">Belum ada anggota yang kembali dari izin.</p>);
@@ -474,64 +474,89 @@ export default function AdminPage() {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           <DashboardCard
             title="Total Anggota"
-            value={dashboard?.data?.totalAnggotaAktif ?? 0}
+            value={dashboard?.totalAnggotaAktif ?? 0}
             color="blue"
+            onClick={() => {
+              setModalTitle("Total Anggota");
+              setModalContent(<p className="text-center py-4">Total anggota aktif saat ini: {dashboard?.totalAnggotaAktif ?? 0}</p>);
+              setModalOpen(true);
+            }}
           />
           <DashboardCard
             title="Hadir Pagi Ini"
-            value={dashboard?.data?.hadirPagi ?? 0}
+            value={dashboard?.hadirPagi ?? 0}
             color="green"
             onClick={showHadirPagiModal}
           />
           <DashboardCard
             title="Hadir Malam Ini"
-            value={dashboard?.data?.hadirMalam ?? 0}
+            value={dashboard?.hadirMalam ?? 0}
             color="green"
             onClick={showHadirMalamModal}
           />
           <DashboardCard
             title="Belum Absen Pagi"
-            value={dashboard?.data?.belumAbsenPagi ?? 0}
+            value={dashboard?.belumAbsenPagi ?? 0}
             color="pink"
             onClick={showBelumAbsenPagiModal}
           />
           <DashboardCard
             title="Belum Absen Malam"
-            value={dashboard?.data?.belumAbsenMalam ?? 0}
+            value={dashboard?.belumAbsenMalam ?? 0}
             color="pink"
             onClick={showBelumAbsenMalamModal}
           />
           <DashboardCard
             title="Sedang Izin"
-            value={dashboard?.data?.sedangIzin ?? 0}
+            value={dashboard?.sedangIzin ?? 0}
             color="yellow"
             onClick={showSedangIzinModal}
           />
           <DashboardCard
             title="Sudah Kembali"
-            value={dashboard?.data?.sudahKembali ?? 0}
+            value={dashboard?.sudahKembali ?? 0}
             color="green"
             onClick={showSudahKembaliModal}
           />
           <DashboardCard
             title="Total Izin Hari Ini"
-            value={dashboard?.data?.totalIzinHariIni ?? 0}
+            value={dashboard?.totalIzinHariIni ?? 0}
             color="pink"
+            onClick={() => {
+              setModalTitle("Total Izin Hari Ini");
+              setModalContent(<p className="text-center py-4">Total izin hari ini: {dashboard?.totalIzinHariIni ?? 0}</p>);
+              setModalOpen(true);
+            }}
           />
           <DashboardCard
             title="Slot Izin Tersedia"
-            value={`${dashboard?.data?.slotTersedia ?? 0} / ${dashboard?.data?.maksSlotIzin ?? 3}`}
+            value={`${dashboard?.slotTersedia ?? 0} / ${dashboard?.maksSlotIzin ?? 3}`}
             color="purple"
+            onClick={() => {
+              setModalTitle("Slot Izin Tersedia");
+              setModalContent(<p className="text-center py-4">Slot izin tersedia: {dashboard?.slotTersedia ?? 0} dari {dashboard?.maksSlotIzin ?? 3}</p>);
+              setModalOpen(true);
+            }}
           />
           <DashboardCard
             title="Persentase Kehadiran Pagi"
-            value={`${dashboard?.data?.persentaseKehadiranPagi ?? 0}%`}
+            value={`${dashboard?.persentaseKehadiranPagi ?? 0}%`}
             color="green"
+            onClick={() => {
+              setModalTitle("Persentase Kehadiran Pagi");
+              setModalContent(<p className="text-center py-4">Persentase kehadiran pagi: {dashboard?.persentaseKehadiranPagi ?? 0}%</p>);
+              setModalOpen(true);
+            }}
           />
           <DashboardCard
             title="Persentase Kehadiran Malam"
-            value={`${dashboard?.data?.persentaseKehadiranMalam ?? 0}%`}
+            value={`${dashboard?.persentaseKehadiranMalam ?? 0}%`}
             color="green"
+            onClick={() => {
+              setModalTitle("Persentase Kehadiran Malam");
+              setModalContent(<p className="text-center py-4">Persentase kehadiran malam: {dashboard?.persentaseKehadiranMalam ?? 0}%</p>);
+              setModalOpen(true);
+            }}
           />
         </div>
 
